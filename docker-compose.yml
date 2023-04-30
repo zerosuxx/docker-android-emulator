@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  fix-kvm:
+    image: zerosuxx/alpine
+    volumes:
+      - "/dev/kvm:/dev/kvm"
+    command: "chown app /dev/kvm"
+
+  app:
+    image: zerosuxx/android-emulator
+    build: .
+    devices:
+      - "/dev/kvm:/dev/kvm"
+    volumes:
+      - ".:/app"
