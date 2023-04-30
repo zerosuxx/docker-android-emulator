@@ -34,18 +34,19 @@ ARG ANDROID_SDK_PACKAGES="${ANDROID_EMULATOR_PACKAGE_X86} ${ANDROID_PLATFORM_VER
 RUN adduser -D app -u 1000 -s /bin/bash && \
     addgroup app kvm   
 USER app
+ENV HOME="/home/app"
 
 # gradle caching
 RUN mkdir -p ~/.cache
-ENV GRADLE_USER_HOME="$HOME/.cache"
+ENV GRADLE_USER_HOME="${HOME}/.cache"
 VOLUME $GRADLE_USER_HOME
 
 # install android sdk
 RUN curl -o /tmp/android-sdk.zip https://dl.google.com/android/repository/${ANDROID_SDK_VERSION} && \
     unzip -d ~/android /tmp/android-sdk.zip && \
     rm -rf /tmp/android-sdk.zip
-ENV ANDROID_HOME="$HOME/android"
-ENV PATH "$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
+ENV ANDROID_HOME="${HOME}/android"
+ENV PATH "${PATH}:${ANDROID_HOME}/emulator:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools"
 
 # sdkmanager
 RUN mkdir ~/.android && \ 
@@ -55,7 +56,7 @@ RUN yes Y | sdkmanager --verbose --no_https ${ANDROID_SDK_PACKAGES}
 
 # avdmanager
 ENV EMULATOR_NAME_X86="android_x86"
-ENV LD_LIBRARY_PATH "$ANDROID_HOME/emulator/lib64:$ANDROID_HOME/emulator/lib64/qt/lib"
+ENV LD_LIBRARY_PATH "${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib"
 RUN echo "no" | avdmanager --verbose create avd --force --name "${EMULATOR_NAME_X86}" --device "pixel" --package "${ANDROID_EMULATOR_PACKAGE_X86}"
 
 COPY --chmod=0755 start-emulator.sh /usr/local/bin/start-emulator
