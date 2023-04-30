@@ -43,7 +43,9 @@ function start_emulator_if_possible() {
     wait_emulator_to_be_ready
     sleep 1
     config_emulator_settings
-    adb logcat *:W
+    while true; do
+      adb logcat *:W
+    done
   fi
 }
 
