@@ -5,7 +5,7 @@ services:
     image: zerosuxx/alpine
     volumes:
       - "/dev/kvm:/dev/kvm"
-    command: "chown app /dev/kvm"
+    command: "chgrp kvm /dev/kvm"
 
   app:
     image: zerosuxx/android-emulator
