@@ -48,3 +48,4 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
+          repository: ${{ env.IMAGE_NAME }}
