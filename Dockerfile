@@ -46,7 +46,7 @@ VOLUME $GRADLE_USER_HOME
 
 # install android sdk
 RUN mkdir -p ~/android/tools && \
-    curl https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_CMD_TOOLS_VERSION}.zip | bsdtar -xvf- -C ~/android/tools --strip-components=1
+    curl https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_CMD_TOOLS_VERSION}.zip | bsdtar -xvf- -p -C ~/android/tools --strip-components=1
 ENV ANDROID_HOME="${HOME}/android"
 ENV PATH "${PATH}:${ANDROID_HOME}/emulator:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools"
 
