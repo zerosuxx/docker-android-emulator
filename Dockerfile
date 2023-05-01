@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11-jdk-alpine
+FROM eclipse-temurin:17-jdk-alpine
 
 RUN apk update && \
     apk upgrade && \
@@ -13,7 +13,9 @@ RUN apk update && \
         dbus \
         polkit \
         virt-manager \
-        tzdata && \
+        tzdata \
+        libarchive-tools \
+        nano && \
     rm -rf /var/lib/apt/lists/* /var/cache/apk/* /tmp/* /var/tmp/*
 
 # config timezone
@@ -27,6 +29,7 @@ ARG ANDROID_ARCH="x86_64"
 ARG ANDROID_EMULATOR_PACKAGE_X86="system-images;${ANDROID_VERSION};${ANDROID_MODULE};${ANDROID_ARCH}"
 ARG ANDROID_PLATFORM_VERSION="platforms;${ANDROID_VERSION}"
 ARG ANDROID_SDK_VERSION="sdk-tools-linux-4333796.zip"
+ARG ANDROID_CMD_TOOLS_VERSION="9477386_latest"
 ARG ANDROID_SDK_PACKAGES_EXTRA=""
 ARG ANDROID_SDK_PACKAGES="${ANDROID_EMULATOR_PACKAGE_X86} ${ANDROID_PLATFORM_VERSION} platform-tools emulator ${ANDROID_SDK_PACKAGES_EXTRA}"
 
@@ -42,9 +45,8 @@ ENV GRADLE_USER_HOME="${HOME}/.cache"
 VOLUME $GRADLE_USER_HOME
 
 # install android sdk
-RUN curl -o /tmp/android-sdk.zip https://dl.google.com/android/repository/${ANDROID_SDK_VERSION} && \
-    unzip -d ~/android /tmp/android-sdk.zip && \
-    rm -rf /tmp/android-sdk.zip
+RUN mkdir -p ~/android/tools && \
+    curl https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_CMD_TOOLS_VERSION}.zip | bsdtar -xvf- -C ~/android/tools --strip-components=1
 ENV ANDROID_HOME="${HOME}/android"
 ENV PATH "${PATH}:${ANDROID_HOME}/emulator:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools"
 
