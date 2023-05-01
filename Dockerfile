@@ -46,10 +46,9 @@ ENV GRADLE_USER_HOME="${HOME}/.cache"
 VOLUME $GRADLE_USER_HOME
 
 # install android sdk
-RUN mkdir -p  ~/android/platform-tools ~/android/cmdline-tools/tools/bin && \
-    curl https://dl.google.com/android/repository/platform-tools-latest-linux.zip | bsdtar -xvf- -C ~/android/platform-tools --strip-components=1 && \
+RUN mkdir -p ~/android/cmdline-tools/tools/bin && \
     curl https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_CMD_TOOLS_VERSION}.zip | bsdtar -xvf- -C ~/android/cmdline-tools/tools --strip-components=1 && \
-    chmod -R +x ~/android/platform-tools ~/android/cmdline-tools/tools/bin
+    chmod -R +x ~/android/cmdline-tools/tools/bin
 ENV ANDROID_HOME="${HOME}/android"
 ENV ANDROID_SDK_ROOT="${ANDROID_HOME}"
 ENV PATH "${PATH}:${ANDROID_HOME}/emulator:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools"
