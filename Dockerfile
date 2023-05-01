@@ -1,21 +1,13 @@
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jdk
 
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache \
-        bash \
+RUN apt-get update && \
+    apt-get install -y \
         git \
-        unzip \
         curl \
         libvirt-daemon \
-        qemu-img \
-        qemu-system-x86_64 \
-        dbus \
-        polkit \
         virt-manager \
         tzdata \
         libarchive-tools \
-        gcompat \
         nano && \
     rm -rf /var/lib/apt/lists/* /var/cache/apk/* /tmp/* /var/tmp/*
 
@@ -35,8 +27,12 @@ ARG ANDROID_SDK_PACKAGES_EXTRA=""
 ARG ANDROID_SDK_PACKAGES="${ANDROID_EMULATOR_PACKAGE_X86} ${ANDROID_PLATFORM_VERSION} platform-tools emulator ${ANDROID_SDK_PACKAGES_EXTRA}"
 
 # create app user with groups
-RUN adduser -D app -u 1000 -s /bin/bash && \
-    addgroup app kvm   
+RUN adduser \
+    app \
+    --disabled-password \
+    --uid 1000 \
+    --shell /bin/bash && \
+    addgroup app kvm  
 USER app
 ENV HOME="/home/app"
 
@@ -49,9 +45,8 @@ VOLUME $GRADLE_USER_HOME
 RUN mkdir -p ~/android/cmdline-tools/tools/bin && \
     curl https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_CMD_TOOLS_VERSION}.zip | bsdtar -xvf- -C ~/android/cmdline-tools/tools --strip-components=1 && \
     chmod -R +x ~/android/cmdline-tools/tools/bin
-ENV ANDROID_HOME="${HOME}/android"
-ENV ANDROID_SDK_ROOT="${ANDROID_HOME}"
-ENV PATH "${PATH}:${ANDROID_HOME}/emulator:${ANDROID_HOME}/cmdline-tools/tools/bin:${ANDROID_HOME}/platform-tools"
+ENV ANDROID_SDK_ROOT="${HOME}/android"
+ENV PATH "${PATH}:${ANDROID_SDK_ROOT}/emulator:${ANDROID_SDK_ROOT}/cmdline-tools/tools/bin:${ANDROID_SDK_ROOT}/platform-tools"
 
 # sdkmanager
 RUN mkdir ~/.android && \ 
@@ -61,7 +56,7 @@ RUN yes Y | sdkmanager --verbose --no_https ${ANDROID_SDK_PACKAGES}
 
 # avdmanager
 ENV EMULATOR_NAME_X86="android_x86"
-ENV LD_LIBRARY_PATH "${ANDROID_HOME}/emulator/lib64:${ANDROID_HOME}/emulator/lib64/qt/lib"
+ENV LD_LIBRARY_PATH "${ANDROID_SDK_ROOT}/emulator/lib64:${ANDROID_SDK_ROOT}/emulator/lib64/qt/lib"
 RUN echo "no" | avdmanager --verbose create avd --force --name "${EMULATOR_NAME_X86}" --device "pixel" --package "${ANDROID_EMULATOR_PACKAGE_X86}"
 
 COPY --chmod=0755 start-emulator.sh /usr/local/bin/start-emulator

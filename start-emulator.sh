@@ -49,4 +49,9 @@ function start_emulator_if_possible() {
   fi
 }
 
+# if [ "$(stat -c "%G" /dev/kvm)" != "kvm" ]; then
+#   echo "Wrong '/dev/kvm' owner group..."
+#   exit 1
+# fi
+
 start_emulator_if_possible
