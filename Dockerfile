@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk8:alpine
+FROM eclipse-temurin:11-jdk-alpine
 
 RUN apk update && \
     apk upgrade && \
