@@ -1,5 +1,8 @@
 # docker-android-emulator
 
+[![Docker Image CI](https://github.com/zerosuxx/docker-android-emulator/actions/workflows/deploy.yaml/badge.svg)](https://github.com/zerosuxx/docker-android-emulator/actions/workflows/deploy.yml)
+[![Docker Pulls](https://img.shields.io/docker/pulls/zerosuxx/android-emulator)](https://hub.docker.com/r/zerosuxx/android-emulator)
+
 ## Build
 ```shell
 $ docker-compose build
