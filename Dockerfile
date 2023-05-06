@@ -51,7 +51,8 @@ ENV PATH "${PATH}:${ANDROID_SDK_ROOT}/emulator:${ANDROID_SDK_ROOT}/cmdline-tools
 
 # sdkmanager
 RUN mkdir ~/.android && \ 
-    touch ~/.android/repositories.cfg ~/.android/emu-update-last-check.ini
+    touch ~/.android/repositories.cfg && \
+    echo "_version.3D32.1.12.0.26coreVersion.3Dqemu2.25202.12.0 = 1683375178" > ~/.android/emu-update-last-check.ini
 RUN yes Y | sdkmanager --licenses
 RUN yes Y | sdkmanager --verbose --no_https ${ANDROID_SDK_PACKAGES}
 
