@@ -1,5 +1,41 @@
 #!/usr/bin/env bash
 
+function help() {
+    echo "Usage: `basename $0` [-h|--help] [-d|--daemon]"
+}
+
+function parse_arguments() {
+  daemon_mode=false
+
+  while getopts "dh-:" option; do
+    case "${option}" in
+      -)
+        case "${OPTARG}" in
+          daemon)
+            daemon_mode=true
+            ;;
+          help)
+            help
+            ;;
+        esac;;
+      d)
+        daemon_mode=true
+        ;;
+      h)
+        help
+        exit
+        ;;
+      *)
+        help
+        exit 1
+        ;;
+    esac
+  done
+}
+
+parse_arguments "$@"
+shift $(($OPTIND - 1))
+
 function check_kvm() {
   cpu_support_hardware_acceleration=$(grep -cw ".*\(vmx\|svm\).*" /proc/cpuinfo)
   if [ "$cpu_support_hardware_acceleration" != 0 ]; then
@@ -43,7 +79,7 @@ function start_emulator_if_possible() {
     wait_emulator_to_be_ready
     sleep 1
     config_emulator_settings
-    while true; do
+    while [ "$daemon_mode" == false ]; do
       adb logcat *:W
     done
   fi
